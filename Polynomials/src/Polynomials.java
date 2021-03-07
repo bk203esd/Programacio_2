@@ -20,56 +20,109 @@ public class Polynomials extends CommandLineProgram {
         //testPow();
         //testEvaluateExpanded();
         //testEvaluateCompressed();
-        //testAddExpanded();
+        testAddExpanded();
         //testAddCompressed();
     }
 
     public int expandedSize(int[][] compressed) {
-        throw new UnsupportedOperationException("Apartado 1");
+        int size = 0;
+        if (compressed.length > 0) {
+            size = compressed[compressed.length - 1][0] + 1;
+        }
+        return size;
     }
 
     public int compressedSize(int[] expanded) {
-        throw new UnsupportedOperationException("Apartado 2");
+        int size = 0;
+        for (int i = 0; i < expanded.length; i++) {
+            if (expanded[i] != 0) {
+                size++;
+            }
+        }
+        return size;
     }
 
     public int[] createExpanded(int expandedSize) {
-        throw new UnsupportedOperationException("Apartado 3");
+        return new int[expandedSize];
     }
 
     public int[][] createCompressed(int compressedSize) {
-        throw new UnsupportedOperationException("Apartado 4");
+        return new int[compressedSize][2];
     }
 
     public void copyTo(int[] fromExpanded, int[][] toCompressed) {
-        throw new UnsupportedOperationException("Apartado 5");
+        int j = 0;
+        for (int i = 0; i < fromExpanded.length; i++) {
+            if (fromExpanded[i] != 0) {
+                toCompressed[j][0] = i;
+                toCompressed[j][1] = fromExpanded[i];
+                j++;
+            }
+        }
     }
 
     public void copyTo(int[][] fromCompressed, int[] toExpanded) {
-        throw new UnsupportedOperationException("Apartado 6");
+        for (int i = 0; i < fromCompressed.length; i++) {
+            toExpanded[fromCompressed[i][0]] = fromCompressed[i][1];
+        }
     }
 
     public int[][] compress(int[] expanded) {
-        throw new UnsupportedOperationException("Apartado 7");
+        int compSIze = compressedSize(expanded);
+        int[][] compressed = createCompressed(compSIze);
+        copyTo(expanded, compressed);
+        return compressed;
     }
 
     public int[] expand(int[][] compressed) {
-        throw new UnsupportedOperationException("Apartado 8");
+        int exSIze = expandedSize(compressed);
+        int[] expanded = createExpanded(exSIze);
+        copyTo(compressed, expanded);
+        return expanded;
     }
 
     public int pow(int base, int exp) {
-        throw new UnsupportedOperationException("Apartado 9");
+        int powResult = 1;
+        for (int i = 0; i < exp; i++) {
+            powResult *= base;
+        }
+        return powResult;
     }
 
     public int evaluate(int[] expanded, int x) {
-        throw new UnsupportedOperationException("Apartado 10");
+        int result = 0;
+        if (expanded.length > 0) {
+            result = expanded[expanded.length - 1];
+            for (int i = 1; i < expanded.length; i++) {
+                result = (result * x) + expanded[expanded.length - 1 - i];
+            }
+        }
+        return result;
     }
 
     public int evaluate(int[][] compressed, int x) {
-        throw new UnsupportedOperationException("Apartado 11");
+        int result = 0;
+        if (compressed.length > 0) {
+            for (int i = 0; i < compressed.length; i++) {
+                result += pow(x, compressed[i][0]) * compressed[i][1];
+            }
+        }
+        return result;
     }
 
     public int[] add(int[] expanded1, int[] expanded2) {
-        throw new UnsupportedOperationException("Apartado 12");
+        int[] suma;
+        if (expanded1.length > expanded2.length) {
+            suma = new int[expanded1.length];
+        } else {
+            suma = new int[expanded2.length];
+        }
+
+        for (int i = 0; i < suma.length; i++) {
+            suma[i] = expanded1[i] + expanded2[i];
+        }
+
+        return suma;
     }
 
     public int[][] add(int[][] compressed1, int[][] compressed2) {
