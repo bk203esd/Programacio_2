@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" default="true" project-jdk-name="15" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="SbtLocalSettings">
+    <option name="modificationStamps">
+      <map>
+        <entry key="$USER_HOME$/Dropbox/Developer/github/Structures" value="1447598359000" />
+        <entry key="$USER_HOME$/Dropbox/MOOC/Coursera/Big Data Analysis with Scala and Spark/week1/example" value="1464692444000" />
+        <entry key="$USER_HOME$/Dropbox/MOOC/Coursera/ParallelProgramming/week2/reductions" value="1465233682000" />
+        <entry key="$USER_HOME$/Dropbox/MOOC/Coursera/ParallelProgramming/week3/kmeans" value="1465234634000" />
+        <entry key="$USER_HOME$/Dropbox/MOOC/Coursera/ParallelProgramming/week4/barneshut" value="1475661430000" />
+      </map>
+    </option>
+    <option name="externalProjectsViewState">
+      <projects_view />
+    </option>
+  </component>
+</project>
