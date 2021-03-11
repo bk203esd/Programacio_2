@@ -9,7 +9,14 @@ public class Problema1 extends GraphicsProgram {
     public double FIGURE_WIDTH = 100.0;
     public double FIGURE_HEIGHT = 75.0;
 
-    public GRect createRect(double x, double y) {
+    public void run() {
+        GRect rect = createRect();
+        movement(rect);
+    }
+
+    public GRect createRect() {
+        double x = (getWidth() - FIGURE_WIDTH) / 2.0;
+        double y = (getHeight() - FIGURE_HEIGHT) / 2.0;
         GRect rect = new GRect(x, y, FIGURE_WIDTH, FIGURE_HEIGHT);
         rect.setFilled(true);
         rect.setColor(Color.RED);
@@ -17,26 +24,22 @@ public class Problema1 extends GraphicsProgram {
         return rect;
     }
 
-    public void run() {
-        double x = (getWidth() - FIGURE_WIDTH) / 2.0;
-        double y = (getHeight() - FIGURE_HEIGHT) / 2.0;
-        GRect rect = createRect(x, y);
-        boolean direction = true;
-
+    public void movement(GRect rect) {
+        boolean moveRight = true;
         while(true) {
-            if(direction) {
+            if(moveRight) {
                 if (rect.getLocation().getX() <= getWidth() - FIGURE_WIDTH) {
-                    pause(TIMEOUT);
                     rect.move(MOVEMENT, 0);
+                    pause(TIMEOUT);
                 } else {
-                    direction = false;
+                    moveRight = false;
                 }
             } else {
                 if (rect.getLocation().getX() >= 0) {
-                    pause(TIMEOUT);
                     rect.move(-MOVEMENT, 0);
+                    pause(TIMEOUT);
                 } else {
-                    direction = true;
+                    moveRight = true;
                 }
             }
         }
