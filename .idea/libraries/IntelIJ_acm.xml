@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="IntelIJ_acm">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/IntelIJ_acm/acm.jar!/" />
+      <root url="jar://$PROJECT_DIR$/IntelIJ_acm/acm-javadoc.zip!/" />
+      <root url="jar://$PROJECT_DIR$/IntelIJ_acm/acm-src.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
