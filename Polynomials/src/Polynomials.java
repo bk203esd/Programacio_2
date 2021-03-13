@@ -20,8 +20,8 @@ public class Polynomials extends CommandLineProgram {
         //testPow();
         //testEvaluateExpanded();
         //testEvaluateCompressed();
-        testAddExpanded();
-        //testAddCompressed();
+        //testAddExpanded();
+        testAddCompressed();
     }
 
     public int expandedSize(int[][] compressed) {
@@ -111,22 +111,60 @@ public class Polynomials extends CommandLineProgram {
     }
 
     public int[] add(int[] expanded1, int[] expanded2) {
-        int[] suma;
+        int[] sumExpanded;
         if (expanded1.length > expanded2.length) {
-            suma = new int[expanded1.length];
+            sumExpanded = new int[expanded1.length];
         } else {
-            suma = new int[expanded2.length];
+            sumExpanded = new int[expanded2.length];
         }
 
-        for (int i = 0; i < suma.length; i++) {
-            suma[i] = expanded1[i] + expanded2[i];
+        for (int i = 0; i < sumExpanded.length; i++) {
+            if (expanded1.length <= i) {
+                sumExpanded[i] = expanded2[i];
+            } else if (expanded2.length <= i) {
+                sumExpanded[i] = expanded1[i];
+            } else {
+                sumExpanded[i] = expanded1[i] + expanded2[i];
+            }
         }
 
-        return suma;
+        if (compressedSize(sumExpanded) == 0) {
+            sumExpanded = new int[0];
+        }
+
+        return sumExpanded;
     }
 
     public int[][] add(int[][] compressed1, int[][] compressed2) {
-        throw new UnsupportedOperationException("Apartado 13");
+        int[][] sumCompressed = new int[compressed1.length + compressed2.length][2];
+
+        for (int i = 0; i < compressed1.length; i++) {
+            sumCompressed[i][0] = compressed1[i][0];
+            sumCompressed[i][1] = compressed1[i][1];
+        }
+        int aux1 = 0;
+        int aux2 = 0;
+        int z = 0;
+        for (int j = 0; j < sumCompressed.length; j++) {
+            if (sumCompressed[j][0] > compressed2[z][0]) {
+                for (int k = 0; k < sumCompressed.length; k++) {
+                    aux1 = sumCompressed[j + k + 1][0];
+                    aux2 = sumCompressed[j + k + 1][1];
+                    sumCompressed[j + k + 1][0] = sumCompressed[j + k][0];
+                    sumCompressed[j + k + 1][1] = sumCompressed[j + k][1];
+                    sumCompressed[j + k][0] = aux1;
+                    sumCompressed[j + k][1] = aux2;
+                }
+                sumCompressed[j][0] = compressed2[j][0];
+                sumCompressed[j][1] = compressed2[j][1];
+                z++;
+            } else {
+                sumCompressed[j][0] += compressed2[j][0];
+                sumCompressed[j][1] += compressed2[j][1];
+                z++;
+            }
+        }
+        return sumCompressed;
     }
 
     // -----
