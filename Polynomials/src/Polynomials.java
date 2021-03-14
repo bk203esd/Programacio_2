@@ -138,33 +138,64 @@ public class Polynomials extends CommandLineProgram {
     public int[][] add(int[][] compressed1, int[][] compressed2) {
         int[][] sumCompressed = new int[compressed1.length + compressed2.length][2];
 
-        for (int i = 0; i < compressed1.length; i++) {
-            sumCompressed[i][0] = compressed1[i][0];
-            sumCompressed[i][1] = compressed1[i][1];
-        }
-        int aux1 = 0;
-        int aux2 = 0;
-        int z = 0;
-        for (int j = 0; j < sumCompressed.length; j++) {
-            if (sumCompressed[j][0] > compressed2[z][0]) {
-                for (int k = 0; k < sumCompressed.length; k++) {
-                    aux1 = sumCompressed[j + k + 1][0];
-                    aux2 = sumCompressed[j + k + 1][1];
-                    sumCompressed[j + k + 1][0] = sumCompressed[j + k][0];
-                    sumCompressed[j + k + 1][1] = sumCompressed[j + k][1];
-                    sumCompressed[j + k][0] = aux1;
-                    sumCompressed[j + k][1] = aux2;
-                }
-                sumCompressed[j][0] = compressed2[j][0];
-                sumCompressed[j][1] = compressed2[j][1];
-                z++;
-            } else {
-                sumCompressed[j][0] += compressed2[j][0];
-                sumCompressed[j][1] += compressed2[j][1];
-                z++;
+        if (compressed1.length > 0 && compressed2.length == 0) {        //segona matriu buida
+            for (int i = 0; i < compressed1.length; i++) {
+                sumCompressed[i][0] = compressed1[i][0];
+                sumCompressed[i][1] = compressed1[i][1];
             }
+            return sumCompressed;
+
+        } else if (compressed2.length > 0 && compressed1.length == 0){  //primera matriu buida
+            for (int i = 0; i < compressed2.length; i++) {
+                sumCompressed[i][0] = compressed2[i][0];
+                sumCompressed[i][1] = compressed2[i][1];
+            }
+            return sumCompressed;
+        } else {
+            for (int i = 0; i < compressed1.length; i++) {
+                sumCompressed[i][0] = compressed1[i][0];
+                sumCompressed[i][1] = compressed1[i][1];
+            }
+
+            int j = 0;
+            for (int i = 0; i < compressed2.length; i++) {
+                boolean copied = false;
+                while (!copied) {
+                    if (compressed2[i][0] == sumCompressed[j][0]) {
+                        sumCompressed[j][1] += compressed2[i][1];
+                        copied = true;
+
+                    } else if (compressed2[i][0] > sumCompressed[j][0]) {
+                        for (int k = sumCompressed.length - 1 ; k > j; k--) {
+                            sumCompressed[k][0] = sumCompressed[k - 1][0];
+                            sumCompressed[k][1] = sumCompressed[k - 1][1];
+                        }
+                        sumCompressed[j][0] = compressed2[j][0];
+                        sumCompressed[j][1] = compressed2[j][1];
+                        copied = true;
+                    }
+                    j++;
+                }
+            }
+            int counter = 0;
+            for (int i = 0; i < sumCompressed.length; i++) {
+                if (sumCompressed[i][1] != 0) {
+                    counter++;
+                } else {
+                    for (int k = 0; k < sumCompressed.length - 1; k++) {
+                        sumCompressed[k][0] = sumCompressed[k + 1][0];
+                        sumCompressed[k][1] = sumCompressed[k + 1][1];
+                    }
+                }
+            }
+            int[][] resultat = new int[counter][2];
+            for (int i = 0; i < resultat.length; i++) {
+                resultat[i][0] = sumCompressed[i][0];
+                resultat[i][1] = sumCompressed[i][1];
+            }
+            return resultat;
         }
-        return sumCompressed;
+
     }
 
     // -----
