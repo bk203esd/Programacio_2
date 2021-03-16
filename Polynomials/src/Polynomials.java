@@ -148,45 +148,39 @@ public class Polynomials extends CommandLineProgram {
 
             copyCompressed(compressed1, auxCompressed);
 
-            int j = 0;
             for (int i = 0; i < compressed2.length; i++) {
-                boolean copied = false;
-                while (!copied) {
-                    if (compressed2[i][0] == auxCompressed[j][0]) {
+                for (int j = 0; j < compressed1.length; j++) {
+                    if (auxCompressed[j][0] == compressed2[i][0] && auxCompressed[j][0] > 0) {
                         auxCompressed[j][1] += compressed2[i][1];
-                        copied = true;
 
-                    } else if (compressed2[i][0] > auxCompressed[j][0]) {
-                        for (int k = auxCompressed.length - 1 ; k > j; k--) {
-                            auxCompressed[k][0] = auxCompressed[k - 1][0];
-                            auxCompressed[k][1] = auxCompressed[k - 1][1];
+                        int k = 0;
+                        for (k = 0; k < compressed2.length - 1; k++) {
+                            compressed2[k][0] = compressed2[k + 1][0];
+                            compressed2[k][1] = compressed2[k + 1][1];
                         }
-                        auxCompressed[j][0] = compressed2[j][0];
-                        auxCompressed[j][1] = compressed2[j][1];
-                        copied = true;
+                        compressed2[k][0] = 0;
+                        compressed2[k][1] = 0;
                     }
-                    j++;
+                }
+            }
+            for (int i = 0; i < compressed2.length; i++) {
+                for (int j = 0; j < auxCompressed.length - 1; j++) {
+                    if (compressed2[i][0] > auxCompressed[j][0] && compressed2[i][0] < auxCompressed[j + 1][0]) {
+                        for (int y = auxCompressed.length - 1 ; y > j; y--) {
+                            auxCompressed[y][0] = auxCompressed[y - 1][0];
+                            auxCompressed[y][1] = auxCompressed[y - 1][1];
+                        }
+                        auxCompressed[j + 1][0] = compressed2[i][0];
+                        auxCompressed[j + 1][1] = compressed2[i][1];
+                    }
+                    if (compressed2[i][0] > auxCompressed[j][0] && auxCompressed[j + 1][0] == 0) {
+                        auxCompressed[j + 1][0] = compressed2[i][0];
+                        auxCompressed[j + 1][1] = compressed2[i][1];
+                    }
                 }
             }
         }
-        int counter = 0;
-        for (int i = 0; i < auxCompressed.length; i++) {
-            if (auxCompressed[i][1] != 0) {
-                counter++;
-            } else {
-                for (int k = 0; k < auxCompressed.length - 1; k++) {
-                    auxCompressed[k][0] = auxCompressed[k + 1][0];
-                    auxCompressed[k][1] = auxCompressed[k + 1][1];
-                }
-            }
-        }
-        int[][] sumCompressed = new int[counter][2];
-        for (int i = 0; i < sumCompressed.length; i++) {
-            sumCompressed[i][0] = auxCompressed[i][0];
-            sumCompressed[i][1] = auxCompressed[i][1];
-        }
-        return sumCompressed;
-
+        return correctCompressed(auxCompressed);
     }
 
     // -----
@@ -200,9 +194,45 @@ public class Polynomials extends CommandLineProgram {
         }
     }
 
+    int [][] correctCompressed (int[][] compressed) {
+        int counter = 0;
+        for (int i = 0; i < compressed.length; i++) {
+            if (compressed[i][1] != 0) {
+                counter++;
+            } else {
+                for (int k = 0; k < compressed.length - 1; k++) {
+                    compressed[k][0] = compressed[k + 1][0];
+                    compressed[k][1] = compressed[k + 1][1];
+                }
+            }
+        }
+        int[][] correctCompress = new int[counter][2];
+        for (int i = 0; i < correctCompress.length; i++) {
+            correctCompress[i][0] = compressed[i][0];
+            correctCompress[i][1] = compressed[i][1];
+        }
+        return correctCompress;
+
+    }
+
     // -----
     // TESTS
     // -----
+
+    public int[][] COMPRESSED1 = new int[][]{{0, 2},
+            {2, -2},
+            {3, 8},
+            {7, -6}};
+
+    public int[][] COMPRESSED2 = new int[][]{{2, 2},
+            {4, -1},
+            {8, 5}};
+
+    public int[][] COMPRESSED_RESULT = new int[][]{{0, 2},
+            {3, 8},
+            {4, -1},
+            {7, -6},
+            {8, 5}};
 
     public int[] EXPANDED_ZERO = new int[0];
     public int[] EXPANDED_LEFT_ZEROS = new int[]{0, 0, 0, 0, 42};
@@ -226,6 +256,8 @@ public class Polynomials extends CommandLineProgram {
             {2, -12},
             {3, -18},
             {4, -24}};
+
+
 
     public String stringify(int[] expanded) {
         StringBuilder builder = new StringBuilder();
@@ -596,9 +628,10 @@ public class Polynomials extends CommandLineProgram {
 
     public void testAddCompressed() {
         printlnInfo("BEGIN add compressed");
-        checkAddCompressed(COMPRESSED_ZERO, COMPRESSED_NON_ZEROS, COMPRESSED_NON_ZEROS);
-        checkAddCompressed(COMPRESSED_NON_ZEROS, COMPRESSED_ZERO, COMPRESSED_NON_ZEROS);
-        checkAddCompressed(COMPRESSED_NON_ZEROS, COMPRESSED_NON_ZEROS_NEG, COMPRESSED_ZERO);
+        //checkAddCompressed(COMPRESSED_ZERO, COMPRESSED_NON_ZEROS, COMPRESSED_NON_ZEROS);
+        //checkAddCompressed(COMPRESSED_NON_ZEROS, COMPRESSED_ZERO, COMPRESSED_NON_ZEROS);
+        //checkAddCompressed(COMPRESSED_NON_ZEROS, COMPRESSED_NON_ZEROS_NEG, COMPRESSED_ZERO);
+        checkAddCompressed(COMPRESSED1, COMPRESSED2, COMPRESSED_RESULT);
         printlnInfo("END add compressed");
         printBar();
     }
