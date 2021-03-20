@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class Problema2 extends GraphicsProgram {
 
-    public int NUM_TURTLES = 6;
+    public int NUM_TURTLES = 5;
     public double TIMEOUT = 10.0;
 
     public int rollDie() {
@@ -14,8 +14,9 @@ public class Problema2 extends GraphicsProgram {
         return rgen.nextInt(1, 6);
     }
 
-    public GOval[] createTurtles(double size) {
+    public GOval[] createTurtles() {
         GOval[] turtles = new GOval[NUM_TURTLES];
+        double size = getHeight() / NUM_TURTLES;
         for (int i = 0; i < NUM_TURTLES; i++) {
             turtles[i] =  new GOval(0, size * i, size, size);
             turtles[i].setFilled(true);
@@ -40,8 +41,7 @@ public class Problema2 extends GraphicsProgram {
     }
 
     public void run() {
-        double size = getHeight() / NUM_TURTLES;
-        GOval[] turtles = createTurtles(size);
+        GOval[] turtles = createTurtles();
         turtleRace(turtles);
     }
 }
