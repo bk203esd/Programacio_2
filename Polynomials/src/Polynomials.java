@@ -1,6 +1,5 @@
 
 import acm.program.CommandLineProgram;
-import com.sun.jdi.VMOutOfMemoryException;
 
 import java.util.Arrays;
 
@@ -110,13 +109,7 @@ public class Polynomials extends CommandLineProgram {
     }
 
     public int[] add(int[] expanded1, int[] expanded2) {
-        int[] sumExpanded;
-        if (expanded1.length > expanded2.length) {
-            sumExpanded = createExpanded(expanded1.length);
-        } else {
-            sumExpanded = createExpanded(expanded2.length);
-        }
-
+        int[] sumExpanded = checkExpandedSize(expanded1, expanded2);
         for (int i = 0; i < sumExpanded.length; i++) {
             if (expanded1.length <= i) {
                 sumExpanded[i] = expanded2[i];
@@ -126,40 +119,48 @@ public class Polynomials extends CommandLineProgram {
                 sumExpanded[i] = expanded1[i] + expanded2[i];
             }
         }
-
-        if (compressedSize(sumExpanded) == 0) {
-            sumExpanded = new int[0];
-        } else {
-            sumExpanded = correctExpanded(sumExpanded);
-        }
-
+        sumExpanded = correctExpanded(sumExpanded);
         return sumExpanded;
     }
+
     // -----
     // FUNCIONS AUXILIARS ADD EXPANDED
     // -----
-        public int[] correctExpanded (int[] expanded) {
+
+    public int[] checkExpandedSize (int[] expanded1, int[] expanded2) {
+        int [] expanded;
+        if (expanded1.length > expanded2.length) {
+            expanded = createExpanded(expanded1.length);
+        } else {
+            expanded = createExpanded(expanded2.length);
+        }
+        return expanded;
+    }
+
+    public void copyExpanded (int[] expanded1, int[] expanded2) {
+        for (int i = 0; i < expanded2.length; i++) {
+            expanded2[i] = expanded1[i];
+        }
+    }
+
+    public int[] correctExpanded (int[] expanded) {
+        int[] correctExpand;
+        if (compressedSize(expanded) == 0) {
+            correctExpand = new int[0];
+        } else {
             int counter = 0;
             for (int i = 0; i < expanded.length; i++) {
                 if (expanded[i] != 0) {
                     counter = i;
                 }
             }
-
-            int[] correctExpand = createExpanded(counter + 1);
+            correctExpand = createExpanded(counter + 1);
             copyExpanded(expanded, correctExpand);
-            return correctExpand;
-
         }
+        return correctExpand;
+    }
 
-        public int[] copyExpanded (int[] expanded1, int[] expanded2) {
-            for (int i = 0; i < expanded2.length; i++) {
-                expanded2[i] = expanded1[i];
-            }
-            return expanded2;
-        }
-    //
-    //
+    // -----
 
     public int[][] add(int[][] compressed1, int[][] compressed2) {
         int[][] auxCompressed = createCompressed(compressed1.length + compressed2.length);
