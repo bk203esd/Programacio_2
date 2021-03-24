@@ -59,15 +59,20 @@ public class Rational {
         return new Rational(r1.x * r2.y, r2.x * r1.y);
     }
 
-    public static int mcd(Rational r1, Rational r2) {
+    public static Rational mcd(Rational r) {
         int aux;
-        while (r2.y != 0) {
-            aux = r2.y;
-            r2.y = r1.y % r2.y;
-            r1.x = aux;
+        int x = r.x;
+        int y = r.y;
+        while (y != 0) {
+            aux = y;
+            y = x % y;
+            x = aux;
         }
-        return r1.x;
+        return new Rational(r.x / x, r.y / x);
     }
 
-
+    public String toString() {
+        return "(" + x + "/" + y + ")";
+    }
 }
+
