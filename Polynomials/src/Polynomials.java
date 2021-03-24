@@ -164,17 +164,13 @@ public class Polynomials extends CommandLineProgram {
 
     public int[][] add(int[][] compressed1, int[][] compressed2) {
         int[][] auxCompressed = createCompressed(compressed1.length + compressed2.length);
-
-        if (compressed1.length > 0 && compressed2.length == 0) {        //segona matriu buida
+        if (compressed2.length == 0) {
             copyCompressed(compressed1, auxCompressed);
-
-        } else if (compressed2.length > 0 && compressed1.length == 0){  //primera matriu buida
+        } else if (compressed1.length == 0) {
             copyCompressed(compressed2, auxCompressed);
-
         } else {
-
             copyCompressed(compressed1, auxCompressed);
-            int[][] copyCompressed2 = new int[compressed2.length][2];
+            int[][] copyCompressed2 = createCompressed(compressed2.length);
             copyCompressed(compressed2, copyCompressed2);
 
             for (int i = 0; i < copyCompressed2.length; i++) {
