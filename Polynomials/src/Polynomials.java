@@ -27,7 +27,7 @@ public class Polynomials extends CommandLineProgram {
     public int expandedSize(int[][] compressed) {
         int size = 0;
         if (compressed.length > 0) {
-            size = compressed[compressed.length - 1][DEGREE] + 1;
+            size = compressed[compressed.length - 1][DEGREE] + 1; //li sumem 1 ja que java compta del 0 a num - 1
         }
         return size;
     }
@@ -35,7 +35,7 @@ public class Polynomials extends CommandLineProgram {
     public int compressedSize(int[] expanded) {
         int size = 0;
         for (int i = 0; i < expanded.length; i++) {
-            if (expanded[i] != 0) {
+            if (expanded[i] != 0) { //sol compta les posicions diferents de 0
                 size++;
             }
         }
@@ -54,16 +54,16 @@ public class Polynomials extends CommandLineProgram {
         int j = 0;
         for (int i = 0; i < fromExpanded.length; i++) {
             if (fromExpanded[i] != 0) {
-                toCompressed[j][DEGREE] = i;
-                toCompressed[j][COEFFICIENT] = fromExpanded[i];
-                j++;
+                toCompressed[j][DEGREE] = i; //el grau del compressed el marca la i en la que no hi ha un 0
+                toCompressed[j][COEFFICIENT] = fromExpanded[i]; //el coeficient es el contingut de la posició que marca i
+                j++; //sol passa a la posició següent si ha fet el if
             }
         }
     }
 
     public void copyTo(int[][] fromCompressed, int[] toExpanded) {
         for (int i = 0; i < fromCompressed.length; i++) {
-            toExpanded[fromCompressed[i][DEGREE]] = fromCompressed[i][COEFFICIENT];
+            toExpanded[fromCompressed[i][DEGREE]] = fromCompressed[i][COEFFICIENT]; //el grau del compressed determina a quina posició ha d'anar al expanded
         }
     }
 
@@ -89,8 +89,8 @@ public class Polynomials extends CommandLineProgram {
 
     public int evaluate(int[] expanded, int x) {
         int result = 0;
-        if (expanded.length > 0) {
-            result = expanded[expanded.length - 1];
+        if (expanded.length > 0) { //si aquesta condició no es compleix significa que el expanded esta buit, per tant, retorna 0 directament
+            result = expanded[expanded.length - 1]; //comença per el grau més gran
             for (int i = 1; i < expanded.length; i++) {
                 result = (result * x) + expanded[expanded.length - 1 - i];
             }
@@ -100,7 +100,7 @@ public class Polynomials extends CommandLineProgram {
 
     public int evaluate(int[][] compressed, int x) {
         int result = 0;
-        if (compressed.length > 0) {
+        if (compressed.length > 0) { //si aquesta condició no es compleix significa que el expanded esta buit, per tant, retorna 0 directament
             for (int i = 0; i < compressed.length; i++) {
                 result += pow(x, compressed[i][DEGREE]) * compressed[i][COEFFICIENT];
             }
@@ -109,23 +109,21 @@ public class Polynomials extends CommandLineProgram {
     }
 
     public int[] add(int[] expanded1, int[] expanded2) {
-        int[] sumExpanded = checkExpandedSize(expanded1, expanded2);
+        int[] sumExpanded = checkExpandedSize(expanded1, expanded2); //retorna un expanded amb la mida més gran dels dos que li entren per paràmetre
         for (int i = 0; i < sumExpanded.length; i++) {
-            if (expanded1.length <= i) {
+            if (expanded1.length <= i) { //quan arriba al final de expanded1
                 sumExpanded[i] = expanded2[i];
-            } else if (expanded2.length <= i) {
+            } else if (expanded2.length <= i) { //quan arriba al final de expanded2
                 sumExpanded[i] = expanded1[i];
             } else {
                 sumExpanded[i] = expanded1[i] + expanded2[i];
             }
         }
-        sumExpanded = correctExpanded(sumExpanded);
+        sumExpanded = correctExpanded(sumExpanded); //retorna el expanded corregit
         return sumExpanded;
     }
 
-    // -----
     // FUNCIONS AUXILIARS ADD EXPANDED
-    // -----
 
     public int[] checkExpandedSize (int[] expanded1, int[] expanded2) {
         int [] expanded;
@@ -146,9 +144,9 @@ public class Polynomials extends CommandLineProgram {
     public int[] correctExpanded (int[] expanded) {
         int[] correctExpand;
         if (compressedSize(expanded) == 0) {
-            correctExpand = new int[0];
+            correctExpand = createExpanded(0);
         } else {
-            int counter = 0;
+            int counter = 0; //comptador que ens servirà per a determinar quina mida haurà de tenir el expanded corregit
             for (int i = 0; i < expanded.length; i++) {
                 if (expanded[i] != 0) {
                     counter = i;
@@ -160,65 +158,24 @@ public class Polynomials extends CommandLineProgram {
         return correctExpand;
     }
 
-    // -----
-
     public int[][] add(int[][] compressed1, int[][] compressed2) {
-        int[][] auxCompressed = createCompressed(compressed1.length + compressed2.length);
+        int[][] sumCompressed = createCompressed(compressed1.length + compressed2.length); //compressed amb la mida més gran que pot arribar a tenir el resultat
         if (compressed2.length == 0) {
-            copyCompressed(compressed1, auxCompressed);
+            copyCompressed(compressed1, sumCompressed); //copia el compressed no buit al resultat
         } else if (compressed1.length == 0) {
-            copyCompressed(compressed2, auxCompressed);
+            copyCompressed(compressed2, sumCompressed); //copia el compressed no buit al resultat
         } else {
-            copyCompressed(compressed1, auxCompressed);
+            copyCompressed(compressed1, sumCompressed); //copia el compressed1 al resultat
             int[][] copyCompressed2 = createCompressed(compressed2.length);
-            copyCompressed(compressed2, copyCompressed2);
-
-            for (int i = 0; i < copyCompressed2.length; i++) {
-                for (int j = 0; j < compressed1.length; j++) {
-                    if (auxCompressed[j][DEGREE] == copyCompressed2[i][DEGREE] && copyCompressed2[i][COEFFICIENT] != 0) {
-                        auxCompressed[j][COEFFICIENT] += copyCompressed2[i][COEFFICIENT];
-                        removeCompressed(copyCompressed2, i);
-                    }
-                }
-            }
-
-            for (int i = 0; i < copyCompressed2.length; i++) {
-
-                int j = 0;
-                boolean copied = false;
-
-                while (!copied && j < auxCompressed.length - 1) {
-                    if (copyCompressed2[i][DEGREE] == 0 && auxCompressed[j][DEGREE] == 0) {
-                        copied = true;
-                    }
-                    if (copyCompressed2[i][DEGREE] > auxCompressed[j][DEGREE] && copyCompressed2[i][DEGREE] < auxCompressed[j + 1][DEGREE]) {
-                        addCompressed(auxCompressed, j);
-                        auxCompressed[j + 1][DEGREE] = copyCompressed2[i][DEGREE];
-                        auxCompressed[j + 1][COEFFICIENT] = copyCompressed2[i][COEFFICIENT];
-                        copied = true;
-                    }
-                    if (copyCompressed2[i][DEGREE] > auxCompressed[j][DEGREE] && auxCompressed[j + 1][DEGREE] == 0) {
-                        auxCompressed[j + 1][DEGREE] = copyCompressed2[i][DEGREE];
-                        auxCompressed[j + 1][COEFFICIENT] = copyCompressed2[i][COEFFICIENT];
-                        copied = true;
-                    }
-                    if (copyCompressed2[i][DEGREE] < auxCompressed[j][DEGREE] && !copied) {
-                        addCompressed(auxCompressed, j);
-                        auxCompressed[j][DEGREE] = copyCompressed2[i][DEGREE];
-                        auxCompressed[j][COEFFICIENT] = copyCompressed2[i][COEFFICIENT];
-                        copied = true;
-                    }
-                    j++;
-                }
-            }
-            auxCompressed = correctCompressed(auxCompressed);
+            copyCompressed(compressed2, copyCompressed2); //crea una copia del compressed2 per a poder canviar el seu contingut sense problemes
+            addCompressedSameDegree(copyCompressed2, sumCompressed); //suma els que tenen el mateix grau
+            addCompressedDifferentDegree(copyCompressed2, sumCompressed); //suma els que tenen graus diferents
+            sumCompressed = correctCompressed(sumCompressed); //corregeix el resultat final
         }
-        return auxCompressed;
+        return sumCompressed;
     }
 
-    // -----
     // FUNCIONS AUXILIARS ADD COMPRESSED
-    // -----
 
     void copyCompressed (int[][] compressed1, int[][] compressed2) {
         for (int i = 0; i < compressed1.length; i++) {
@@ -228,13 +185,10 @@ public class Polynomials extends CommandLineProgram {
     }
 
     void removeCompressed (int [][] compressed, int index) {
-        int i = 0;
-        for (i = index; i < compressed.length - 1; i++) {
+        for (int i = index; i < compressed.length - 1; i++) {
             compressed[i][DEGREE] = compressed[i + 1][DEGREE];
             compressed[i][COEFFICIENT] = compressed[i + 1][COEFFICIENT];
         }
-        compressed[i][DEGREE] = 0;
-        compressed[i][COEFFICIENT] = 0;
     }
 
     void addCompressed (int [][] compressed, int index) {
@@ -244,43 +198,72 @@ public class Polynomials extends CommandLineProgram {
         }
     }
 
-    int [][] correctCompressed (int[][] auxCompressed) {
-        int counter = 0;
-        boolean isCounted = false;
-        int i = 0;
-        int[][] compressed = createCompressed(auxCompressed.length);
-        copyCompressed(auxCompressed, compressed);
-        while (!isCounted) {
-            if (compressed[i][DEGREE] == 0 && compressed[i][COEFFICIENT] == 0) {
-                isCounted = true;
+    void addCompressedSameDegree (int[][] compressed1, int[][] compressed2) {
+        for (int i = 0; i < compressed1.length; i++) {
+            for (int j = 0; j < compressed2.length - compressed1.length; j++) {
+                if (compressed2[j][DEGREE] == compressed1[i][DEGREE] && compressed1[i][COEFFICIENT] != 0) { //si tenen el mateix grau i el coeficient es diferent de 0
+                    compressed2[j][COEFFICIENT] += compressed1[i][COEFFICIENT]; //suma el contingut dels graus
+                    removeCompressed(compressed1, i); //elimina el que em sumat
+                    compressed1[compressed1.length - 1][DEGREE] = 0; //col·loca uns zeros al final de la taula
+                    compressed1[compressed1.length - 1][COEFFICIENT] = 0;
+                }
+            }
+        }
+    }
 
-            } else {
-                if (compressed[i][DEGREE] != 0 && compressed[i][COEFFICIENT] == 0) {
-                    for (int j = i; j < compressed.length - 1; j++) {
-                        compressed[j][DEGREE] = compressed[j + 1][DEGREE];
-                        compressed[j][COEFFICIENT] = compressed[j + 1][COEFFICIENT];
+    void addCompressedDifferentDegree (int[][] compressed1, int[][] compressed2) {
+        for (int i = 0; i < compressed1.length; i++) {
+            int j = 0;
+            boolean copied = false;
+            while (!copied && j < compressed2.length - 1) {
+                copied = true;
+                if (compressed1[i][DEGREE] > compressed2[j][DEGREE] && compressed1[i][DEGREE] < compressed2[j + 1][DEGREE]) { //per si el nombre va a la primera posició de la taula
+                    addCompressed(compressed2, j);
+                    compressed2[j + 1][DEGREE] = compressed1[i][DEGREE];
+                    compressed2[j + 1][COEFFICIENT] = compressed1[i][COEFFICIENT];
+                } else if (compressed1[i][DEGREE] < compressed2[j][DEGREE]) { //per si va entre mig
+                    addCompressed(compressed2, j);
+                    compressed2[j][DEGREE] = compressed1[i][DEGREE];
+                    compressed2[j][COEFFICIENT] = compressed1[i][COEFFICIENT];
+                } else if (compressed1[i][DEGREE] > compressed2[j][DEGREE] && compressed2[j + 1][DEGREE] == 0) { //per si va al final
+                    compressed2[j + 1][DEGREE] = compressed1[i][DEGREE];
+                    compressed2[j + 1][COEFFICIENT] = compressed1[i][COEFFICIENT];
+                } else {
+                    if (compressed1[i][DEGREE] != 0 || compressed2[j][DEGREE] != 0) { //per a que ignori els zeros del final
+                        copied = false;
                     }
                 }
-                counter++;
+                j++;
             }
-            i++;
-
         }
-        int[][] correctCompress = createCompressed(counter);
+    }
 
+    int [][] correctCompressed (int[][] auxCompressed) {
+        int[][] compressed = createCompressed(auxCompressed.length);
+        copyCompressed(auxCompressed, compressed); //crea una copia per a que no afecti als parametres de la funció
+        boolean isCounted = false;
+        int i = 0;
+        while (!isCounted) {
+            if (compressed[i][DEGREE] == 0 && compressed[i][COEFFICIENT] == 0) { //si arriba als zeros del final el while para de comptar
+                isCounted = true;
+            } else {
+                if (compressed[i][DEGREE] != 0 && compressed[i][COEFFICIENT] == 0) { //si troba un coeficient 0 en un grau que no es 0 l'elimina
+                    removeCompressed(compressed, i);
+                }
+            }
+            i++; //comptador que determinarà la mida del compressed corregit
+        }
+        int[][] correctCompress = createCompressed(i - 1); //li restem 1 perque quan el while arriba a la posició [0, 0] també compta
         for (int j = 0; j < correctCompress.length; j++) {
             correctCompress[j][DEGREE] = compressed[j][DEGREE];
             correctCompress[j][COEFFICIENT] = compressed[j][COEFFICIENT];
         }
-
         return correctCompress;
-
     }
 
     // -----
     // TESTS
     // -----
-
 
 
     public int[] EXPANDED_ZERO = new int[0];
