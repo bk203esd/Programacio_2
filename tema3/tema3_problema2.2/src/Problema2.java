@@ -9,13 +9,12 @@ public class Problema2 extends CommandLineProgram {
         try {
             int sum = 0;
             FileReader input = new FileReader(FILE_NAME);
-            int c = input.read();
+            int c;
 
-            while (c != -1) {
+            while ((c = input.read()) != -1) {
                 if (c != ',') {
                     sum += c - '0';
                 }
-                c = input.read();
             }
             input.close();
             println(sum);
