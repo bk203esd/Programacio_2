@@ -48,11 +48,11 @@ public class Geometry {
     }
 
     public GPoint tokenTopLeft(int x, int y) {
-        throw new UnsupportedOperationException("Step 3");
+        return new GPoint(cellTopLeft(x, y).getX() + cellDimension().getWidth() * this.cellPadding, cellTopLeft(x, y).getY() + cellDimension().getHeight() * this.cellPadding);
     }
 
     public GPoint centerAt(int x, int y) {
-        throw new UnsupportedOperationException("Step 3");
+        return new GPoint(tokenTopLeft(x, y).getX() + tokenDimension().getWidth() / 2, tokenTopLeft(x, y).getY() + tokenDimension().getHeight() / 2 );
     }
 
     //Implemented

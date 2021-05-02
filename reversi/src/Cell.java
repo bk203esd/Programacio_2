@@ -25,27 +25,15 @@ public class Cell {
     }
 
     public boolean isEmpty() {
-        if (this.state == EMPTY) {
-            return true;
-        } else {
-            return false;
-        }
+        return (this.state == EMPTY);
     }
 
     public boolean isWhite() {
-        if (this.state == WHITE) {
-            return true;
-        } else {
-            return false;
-        }
+        return (this.state == WHITE);
     }
 
     public boolean isBlack() {
-        if (this.state == BLACK) {
-            return true;
-        } else {
-            return false;
-        }
+        return (this.state == BLACK);
     }
 
     public void setWhite() {

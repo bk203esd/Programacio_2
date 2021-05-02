@@ -12,27 +12,37 @@ public class Game {
     }
 
     public boolean isFinished() {
-        throw new UnsupportedOperationException("Step 5.1");
+        return (this.state == State.FINISHED);
     }
 
     public boolean isSame(State player, Position position) {
-        throw new UnsupportedOperationException("Step 5.1");
+        return (player == State.WHITE && board.isWhite(position)) || (player == State.BLACK && board.isBlack(position));
     }
 
     public boolean isOther(State player, Position position) {
-        throw new UnsupportedOperationException("Step 5.1");
+        return (player == State.WHITE && board.isBlack(position)) || (player == State.BLACK && board.isWhite(position));
     }
 
     public boolean someSame(State player, Position position, Direction direction) {
-        throw new UnsupportedOperationException("Step 5.1");
+        while (board.contains(position) && !board.isEmpty(position)) {
+            if (isSame(player, position)) {
+                return true;
+            }
+            position = direction.move(position);
+        }
+        return false;
     }
 
     public boolean isReverseDirection(State player, Position position, Direction direction) {
-        throw new UnsupportedOperationException("Step 5.2");
+        return (someSame(player, position, direction) && (isOther(player, direction.move(position))));
     }
 
     public boolean[] directionsOfReverse(State player, Position position) {
-        throw new UnsupportedOperationException("Step 5.2");
+        boolean[] directions = new boolean[Direction.ALL.length];
+        for (int i = 0; i < directions.length; i++) {
+            directions[i] = isReverseDirection(player, position, Direction.ALL[i]);
+        }
+        return directions;
     }
 
     private static boolean allFalse(boolean[] bools) {
