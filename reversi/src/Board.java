@@ -43,14 +43,7 @@ public class Board {
     }
 
     public boolean contains(Position position) {
-        for (int i = 0; i < this.cells.length; i++) {
-            for (int j = 0; j < this.cells[0].length; j++) {
-                if (i == position.getRow() && j == position.getColumn()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return (position.getRow() < this.cells.length && position.getRow() >= 0 && position.getColumn() < this.cells.length && position.getColumn() >= 0);
     }
 
     public boolean isEmpty(Position position) {

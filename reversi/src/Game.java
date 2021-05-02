@@ -34,7 +34,7 @@ public class Game {
     }
 
     public boolean isReverseDirection(State player, Position position, Direction direction) {
-        return (someSame(player, position, direction) && (isOther(player, direction.move(position))));
+        return (someSame(player, direction.move(position), direction) && (isOther(player, direction.move(position))));
     }
 
     public boolean[] directionsOfReverse(State player, Position position) {
