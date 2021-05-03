@@ -25,9 +25,8 @@ public class Game {
 
     public boolean someSame(State player, Position position, Direction direction) {
         while (board.contains(position) && !board.isEmpty(position)) {
-            if (isSame(player, position)) {
+            if (isSame(player, position))
                 return true;
-            }
             position = direction.move(position);
         }
         return false;
@@ -46,31 +45,63 @@ public class Game {
     }
 
     private static boolean allFalse(boolean[] bools) {
-        throw new UnsupportedOperationException("Step 5.2");
-    }
-
-    public boolean canPlay(State player) {
-        throw new UnsupportedOperationException("Step 5.3");
+        for (int i = 0; i < bools.length; i++) {
+            if (bools[i])
+                return false;
+        }
+        return true;
     }
 
     public boolean canPlayPosition(State player, Position position) {
-        throw new UnsupportedOperationException("Step 5.3");
+        for (int i = 0; i < directionsOfReverse(player, position).length; i++) {
+            if (board.isEmpty(position) && directionsOfReverse(player, position)[i])
+                return true;
+        }
+        return false;
+    }
+
+    public boolean canPlay(State player) {
+        for (int i = 0; i < board.size(); i++) {
+            for (int j = 0; j < board.size(); j++) {
+                if (canPlayPosition(player, new Position(i, j)))
+                    return true;
+            }
+        }
+        return false;
     }
 
     private void disk(Position position) {
-        throw new UnsupportedOperationException("Step 5.4");
+        if (this.state == State.WHITE) {
+            board.setWhite(position);
+        } else if (this.state == State.BLACK) {
+            board.setBlack(position);
+        }
     }
 
     private void reverse(Position position, Direction direction) {
-        throw new UnsupportedOperationException("Step 5.4");
+        while (isOther(this.state, direction.move(position))) {
+            board.reverse(direction.move(position));
+            position = direction.move(position);
+        }
     }
 
     private void reverse(Position position, boolean[] directions) {
-        throw new UnsupportedOperationException("Step 5.4");
+        for (int i = 0; i < directions.length; i++) {
+            if (directions[i]) {
+                reverse(position, Direction.ALL[i]);
+            }
+        }
     }
 
     private void changeTurn() {
-        throw new UnsupportedOperationException("Step 5.4");
+        if (this.state == State.WHITE && canPlay(State.BLACK)) {
+            this.state = State.BLACK;
+        } else if (this.state == State.BLACK && canPlay(State.WHITE)) {
+            this.state = State.WHITE;
+        }
+        if (!canPlay(State.BLACK) && !canPlay(State.WHITE)) {
+            this.state = State.FINISHED;
+        }
     }
 
     public void move(Position position) {

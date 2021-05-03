@@ -1,5 +1,7 @@
 
 import acm.program.GraphicsProgram;
+import acm.program.ProgramMenuBar;
+
 import java.awt.event.MouseEvent;
 
 public class Reversi extends GraphicsProgram {
@@ -38,5 +40,9 @@ public class Reversi extends GraphicsProgram {
 
     public static void main(String[] args) {
         new Reversi().start(args);
+    }
+
+    protected ProgramMenuBar createMenuBar() {
+        return null;
     }
 }

@@ -32,9 +32,11 @@ public class Board {
                 if ((i == this.order - 1 && j == this.order - 1) || (i == this.order && j == this.order)) {
                     cells[i][j] = Cell.white();
                     white++;
+                    if (display != null) display.setWhite(new Position (i, j));
                 } else if ((i == this.order && j == this.order - 1) || (i == this.order - 1 && j == this.order)) {
                     cells[i][j] = Cell.black();
                     black++;
+                    if (display != null) display.setBlack(new Position (i, j));
                 } else {
                     cells[i][j] = Cell.empty();
                 }
@@ -71,6 +73,7 @@ public class Board {
         if (isEmpty(position)) {
             cells[position.getRow()][position.getColumn()].setWhite();
             white++;
+            if (display != null) display.setWhite(position);
         }
     }
 
@@ -78,6 +81,7 @@ public class Board {
         if (isEmpty(position)) {
             cells[position.getRow()][position.getColumn()].setBlack();
             black++;
+            if (display != null) display.setBlack(position);
         }
     }
 
@@ -87,10 +91,14 @@ public class Board {
                 cells[position.getRow()][position.getColumn()].reverse();
                 white++;
                 black--;
+                if (display != null) display.reverse(position);
+
             } else if (cells[position.getRow()][position.getColumn()].isWhite()) {
                 cells[position.getRow()][position.getColumn()].reverse();
                 black++;
                 white--;
+                if (display != null) display.reverse(position);
+
             }
         }
     }
