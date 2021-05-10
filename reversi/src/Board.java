@@ -27,13 +27,13 @@ public class Board {
     }
 
     private void initBoard() {
-        for (int i = 0; i < this.cells.length; i++) {
-            for (int j = 0; j < this.cells[0].length; j++) {
-                if ((i == this.order - 1 && j == this.order - 1) || (i == this.order && j == this.order)) {
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells[0].length; j++) {
+                if ((i == order - 1 && j == order - 1) || (i == order && j == order)) {
                     cells[i][j] = Cell.white();
                     white++;
                     if (display != null) display.setWhite(new Position (i, j));
-                } else if ((i == this.order && j == this.order - 1) || (i == this.order - 1 && j == this.order)) {
+                } else if ((i == order && j == order - 1) || (i == order - 1 && j == order)) {
                     cells[i][j] = Cell.black();
                     black++;
                     if (display != null) display.setBlack(new Position (i, j));
@@ -45,7 +45,7 @@ public class Board {
     }
 
     public boolean contains(Position position) {
-        return (position.getRow() < this.cells.length && position.getRow() >= 0 && position.getColumn() < this.cells.length && position.getColumn() >= 0);
+        return (position.getRow() < cells.length && position.getRow() >= 0 && position.getColumn() < cells.length && position.getColumn() >= 0);
     }
 
     public boolean isEmpty(Position position) {
@@ -87,13 +87,13 @@ public class Board {
 
     public void reverse(Position position) {
         if (!isEmpty(position) && contains(position)) {
-            if(cells[position.getRow()][position.getColumn()].isBlack()) {
+            if(isBlack(position)) {
                 cells[position.getRow()][position.getColumn()].reverse();
                 white++;
                 black--;
                 if (display != null) display.reverse(position);
 
-            } else if (cells[position.getRow()][position.getColumn()].isWhite()) {
+            } else if (isWhite(position)) {
                 cells[position.getRow()][position.getColumn()].reverse();
                 black++;
                 white--;
