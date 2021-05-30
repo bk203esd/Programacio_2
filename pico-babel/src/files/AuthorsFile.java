@@ -11,34 +11,41 @@ public class AuthorsFile {
     private final RandomAccessFile authors;
 
     public AuthorsFile(String fname) throws IOException {
-        throw new UnsupportedOperationException("paso 3");
+        authors = new RandomAccessFile(fname, "rw");
     }
 
     public void writeAuthor(Author author) throws IOException {
-        throw new UnsupportedOperationException("paso 3");
+        byte[] record = author.toBytes();
+        long pos = (author.getId() - 1) * Author.SIZE;
+        authors.seek(pos);
+        authors.write(record);
     }
 
     public Author readAuthor(long idAuthor) throws IOException {
-        throw new UnsupportedOperationException("paso 3");
+        byte[] record = new byte[Author.SIZE];
+        long pos = (idAuthor - 1) * Author.SIZE;
+        authors.seek(pos);
+        authors.read(record);
+        return Author.fromBytes(record);
     }
 
     public long numAuthors() throws IOException {
-        throw new UnsupportedOperationException("paso 3");
+        return authors.length() / Author.SIZE;
     }
 
     public long nextAuthorId() throws IOException {
-        throw new UnsupportedOperationException("paso 3");
+        return numAuthors() + 1;
     }
 
     public boolean isValidId(long idAuthor) throws IOException {
-        throw new UnsupportedOperationException("paso 3");
+        return (idAuthor >= 1L && idAuthor <= numAuthors());
     }
 
     public void reset() throws IOException {
-        throw new UnsupportedOperationException("paso 3");
+        this.authors.setLength(0);
     }
 
     public void close() throws IOException {
-        throw new UnsupportedOperationException("paso 3");
+        authors.close();
     }
 }

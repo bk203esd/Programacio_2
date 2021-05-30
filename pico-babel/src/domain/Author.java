@@ -6,7 +6,7 @@ public class Author {
 
     public static final int NAME_LIMIT = 20;
 
-    public static final int SIZE = -1; // TODO
+    public static final int SIZE = 8 + NAME_LIMIT * 2 + 4 + 8 + 8; // long + String 20 chars + int + long + long
 
     private final long id;
     private final String name;
@@ -17,43 +17,86 @@ public class Author {
 
 
     public Author(long id, String name) {
-        throw new UnsupportedOperationException("paso 1");
+        this.id = id;
+        this.name = name;
+        this.numBooks = 0;
+        this.firstBookId = -1L;
+        this.lastBookId = -1L;
     }
 
     public Author(long id, String name, int numBooks, long firstBookId, long lastBookId) {
-        throw new UnsupportedOperationException("paso 1");
+        this.id = id;
+        this.name = name;
+        this.numBooks = numBooks;
+        this.firstBookId = firstBookId;
+        this.lastBookId = lastBookId;
     }
 
     public void addBookId(long idBook) {
-        throw new UnsupportedOperationException("paso 1");
+        if (numBooks == 0) {
+            this.firstBookId = idBook;
+            this.lastBookId = idBook;
+        } else {
+            this.lastBookId = idBook;
+        }
+        this.numBooks++;
     }
 
     public byte[] toBytes() {
-        throw new UnsupportedOperationException("paso 1");
+        byte[] record = new byte[SIZE];
+        int offset = 0;
+        PackUtils.packLong(id, record, offset);
+        offset += 8;
+
+        PackUtils.packLimitedString(name, NAME_LIMIT, record, offset);
+        offset += 2 * NAME_LIMIT;
+
+        PackUtils.packInt(numBooks, record, offset);
+        offset += 4;
+
+        PackUtils.packLong(firstBookId, record, offset);
+        offset += 8;
+
+        PackUtils.packLong(lastBookId, record, offset);
+        return record;
     }
 
     public static Author fromBytes(byte[] record) {
-        throw new UnsupportedOperationException("paso 1");
+        int offset = 0;
+        long id = PackUtils.unpackLong(record, offset);
+        offset += 8;
+
+        String name = PackUtils.unpackLimitedString(NAME_LIMIT, record, offset);
+        offset += 2 * NAME_LIMIT;
+
+        int numBooks = PackUtils.unpackInt(record, offset);
+        offset += 4;
+
+        long firstBookId = PackUtils.unpackLong(record, offset);
+        offset += 8;
+
+        long lastBookId = PackUtils.unpackLong(record, offset);
+        return new Author(id, name, numBooks, firstBookId, lastBookId);
     }
 
     public long getId() {
-        throw new UnsupportedOperationException("paso 1");
+        return this.id;
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("paso 1");
+        return this.name;
     }
 
     public long getLastBookId() {
-        throw new UnsupportedOperationException("paso 1");
+        return this.lastBookId;
     }
 
     public int getNumBooks() {
-        throw new UnsupportedOperationException("paso 1");
+        return this.numBooks;
     }
 
     public long getFirstBookId() {
-        throw new UnsupportedOperationException("paso 1");
+        return this.firstBookId;
     }
 
     @Override
