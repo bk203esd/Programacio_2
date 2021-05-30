@@ -33,8 +33,8 @@ public class BooksFile {
         int j = 0;
         byte[] record = new byte[Book.SIZE];
         Book[] arrayBooks = new Book[author.getNumBooks()];
-        for (int i = 0; i < numBooks(); i++) {
-            books.seek(i * Book.SIZE);
+        for (int i = 0; i < books.length(); i += Book.SIZE) {
+            books.seek(i);
             books.read(record);
             Book newBook = Book.fromBytes(record);
             if (author.getId() == newBook.getAuthorId()) {
