@@ -16,14 +16,14 @@ public class BooksFile {
 
     public void writeBook(Book book) throws IOException {
         byte[] record = book.toBytes();
-        long pos = (book.getId() - 1) * Author.SIZE;
+        long pos = (book.getId() - 1) * Book.SIZE;
         books.seek(pos);
         books.write(record);
     }
 
     public Book readBook(long idBook) throws IOException {
-        byte[] record = new byte[Author.SIZE];
-        long pos = (idBook - 1) * Author.SIZE;
+        byte[] record = new byte[Book.SIZE];
+        long pos = (idBook - 1) * Book.SIZE;
         books.seek(pos);
         books.read(record);
         return Book.fromBytes(record);
@@ -33,8 +33,8 @@ public class BooksFile {
         int j = 0;
         byte[] record = new byte[Book.SIZE];
         Book[] arrayBooks = new Book[author.getNumBooks()];
-        for (int i = 0; i < books.length(); i += Book.SIZE) {
-            books.seek(i);
+        for (int i = 0; i < numBooks(); i++) {
+            books.seek(i * Book.SIZE);
             books.read(record);
             Book newBook = Book.fromBytes(record);
             if (author.getId() == newBook.getAuthorId()) {

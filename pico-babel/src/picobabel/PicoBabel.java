@@ -45,18 +45,85 @@ public class PicoBabel extends CommandLineProgram {
     }
 
     private void openFiles() throws IOException {
-        throw new UnsupportedOperationException("paso 5");
+        this.movements = new BufferedReader(new FileReader(MOVEMENTS));
+        this.logger = new Logger(LOG);
+        this.authorsDB = new AuthorsFile(AUTHORS);
+        this.booksDB = new BooksFile(BOOKS);
     }
 
     private void resetData() throws IOException {
-        throw new UnsupportedOperationException("paso 5");
+        authorsDB.reset();
+        booksDB.reset();
     }
 
     private void closeFiles() throws IOException {
-        throw new UnsupportedOperationException("paso 5");
+        movements.close();
+        logger.close();
+        authorsDB.close();
+        booksDB.close();
     }
 
     private void processMovements() throws IOException {
-        throw new UnsupportedOperationException("paso 5");
+        String instruction = this.movements.readLine();
+        while (instruction != null) {
+            StringTokenizer movements = new StringTokenizer(instruction, ",");
+            String movement = movements.nextToken();
+            if (movement.equals("ALTA_AUTOR")) {
+                registerAuthor(movements.nextToken());
+            } else if (movement.equals("ALTA_LIBRO")) {
+                registerBook(movements.nextToken(), Long.parseLong(movements.nextToken()));
+            } else if (movement.equals("INFO_AUTOR")) {
+                searchAuthor(Long.parseLong(movements.nextToken()));
+            } else if (movement.equals("INFO_LIBRO")) {
+                searchBook(Long.parseLong(movements.nextToken()));
+            } else {
+                logger.errorUnknownOperation(movement);
+            }
+            instruction = this.movements.readLine();
+        }
+    }
+
+    //funcions auxiliars
+
+    private void registerAuthor(String authorName) throws IOException {
+        long authorId = authorsDB.nextAuthorId();
+        Author newAuthor = new Author(authorId, authorName);
+        authorsDB.writeAuthor(newAuthor);
+        logger.okNewAuthor(newAuthor);
+    }
+
+    private void registerBook(String bookName, Long authorId) throws IOException {
+        if (!authorsDB.isValidId(authorId)) {
+            logger.errorInfoAutor(authorId);
+        } else {
+            long bookId = booksDB.nextBookId();
+            Book newBook = new Book(bookId, bookName, authorId);
+            booksDB.writeBook(newBook);
+            Author author = authorsDB.readAuthor(authorId);
+            author.addBookId(bookId);
+            authorsDB.writeAuthor(author);
+            logger.okNewBook(newBook);
+        }
+    }
+
+    private void searchAuthor(Long authorId) throws IOException{
+        if (!authorsDB.isValidId(authorId)) {
+            logger.errorInfoBook(authorId);
+        } else {
+            Author author = authorsDB.readAuthor(authorId);
+            Book[] books = booksDB.getBooksForAuthor(author);
+            logger.okInfoAutor(author, books);
+        }
+    }
+
+    private void searchBook(Long bookId) throws IOException {
+        if (!booksDB.isValidId(bookId)) {
+            logger.errorInfoBook(bookId);
+        } else {
+            Book book = booksDB.readBook(bookId);
+            Author author = authorsDB.readAuthor(book.getAuthorId());
+            logger.okInfoBook(book, author);
+        }
+
     }
 }
