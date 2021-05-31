@@ -102,6 +102,11 @@ public class PicoBabel extends CommandLineProgram {
             Author author = authorsDB.readAuthor(authorId);
             author.addBookId(bookId);
             authorsDB.writeAuthor(author);
+            if (author.getNumBooks() > 1) {
+                Book[] books = booksDB.getBooksForAuthor(author);
+                books[books.length - 2].setNextBookId(bookId);
+                booksDB.writeBook(books[books.length - 2]);
+            }
             logger.okNewBook(newBook);
         }
     }
